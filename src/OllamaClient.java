@@ -5,16 +5,14 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 public class OllamaClient {
-    private final String host;
-    private final int port;
+    private final String baseUrl;
     private final HttpClient client;
 
     public String embedModel = "nomic-embed-text";
     public String genModel = "llama3.2";
 
-    public OllamaClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public OllamaClient(String baseUrl) {
+        this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(3))
                 .build();
@@ -23,7 +21,7 @@ public class OllamaClient {
     public boolean isAvailable() {
         try {
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://" + host + ":" + port + "/api/tags"))
+                    .uri(URI.create(baseUrl + "/api/tags"))
                     .timeout(Duration.ofSeconds(2))
                     .GET()
                     .build();
@@ -66,7 +64,7 @@ public class OllamaClient {
         try {
             String jsonBody = "{\"model\":\"" + embedModel + "\",\"prompt\":\"" + escapeJson(text) + "\"}";
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://" + host + ":" + port + "/api/embeddings"))
+                    .uri(URI.create(baseUrl + "/api/embeddings"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .timeout(Duration.ofSeconds(30))
@@ -83,7 +81,7 @@ public class OllamaClient {
         try {
             String jsonBody = "{\"model\":\"" + genModel + "\",\"prompt\":\"" + escapeJson(prompt) + "\",\"stream\":false}";
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://" + host + ":" + port + "/api/generate"))
+                    .uri(URI.create(baseUrl + "/api/generate"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .timeout(Duration.ofSeconds(180))
