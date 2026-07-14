@@ -21,7 +21,16 @@ public class Main {
     public static void main(String[] args) {
         db = new VectorDB(DIMS);
         docDB = new DocumentDB();
-        ollama = new OllamaClient("127.0.0.1", 11434);
+        String envHost = System.getenv("OLLAMA_HOST");
+        String envPort = System.getenv("OLLAMA_PORT");
+        String host = (envHost != null && !envHost.isEmpty()) ? envHost : "127.0.0.1";
+        int portVal = 11434;
+        if (envPort != null && !envPort.isEmpty()) {
+            try {
+                portVal = Integer.parseInt(envPort);
+            } catch (NumberFormatException ignored) {}
+        }
+        ollama = new OllamaClient(host, portVal);
 
         loadDemo(db);
 
