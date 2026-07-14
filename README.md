@@ -6,6 +6,18 @@ VectraCore implements production-grade index structures (HNSW) and space-partiti
 
 ---
 
+## Dashboard & Visualizations
+
+### 1. Vector Search & PCA Projections
+Interactive 2D PCA projection of the 16-dimensional semantic space. Projections dynamically adapt as new vectors are added, with HNSW layers and distances calculated in real-time.
+![Vector Search Dashboard](assets/search_demo.png)
+
+### 2. Local RAG Chat (Ask AI)
+A retrieval-augmented generation chat interface utilizing HNSW vector search to supply relevant document chunks as context to the local LLM.
+![RAG Ask AI Dashboard](assets/rag_demo.png)
+
+---
+
 ## Why This Project?
 
 Most modern search applications and RAG systems rely on black-box vector databases (such as Pinecone, Weaviate, or Chroma). This project was created to:
