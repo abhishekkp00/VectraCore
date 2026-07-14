@@ -28,9 +28,37 @@ public class OllamaClient {
                     .GET()
                     .build();
             HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            return resp.statusCode() == 200;
+            if (resp.statusCode() == 200) {
+                detectModels(resp.body());
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void detectModels(String body) {
+        if (body == null) return;
+
+        // Detect embed model
+        if (body.contains("nomic-embed-text")) {
+            embedModel = "nomic-embed-text";
+        } else if (body.contains("all-minilm")) {
+            embedModel = "all-minilm";
+        }
+
+        // Detect generation model
+        if (body.contains("llama3.2")) {
+            genModel = "llama3.2";
+        } else if (body.contains("qwen2.5:3b")) {
+            genModel = "qwen2.5:3b";
+        } else if (body.contains("qwen2.5-coder")) {
+            genModel = "qwen2.5-coder";
+        } else if (body.contains("gemma4")) {
+            genModel = "gemma4";
+        } else if (body.contains("tinyllama")) {
+            genModel = "tinyllama";
         }
     }
 
